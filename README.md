@@ -29,6 +29,12 @@ AWS_ACCESS_KEY_ID=1234
 AWS_SECRET_ACCESS_KEY=1234
 ```
 
+Install the project dependencies
+
+```
+npm install
+```
+
 Or, you can set these as environment variables manually before deploying.
 
 ## 2. Develop
