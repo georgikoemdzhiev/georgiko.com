@@ -1,0 +1,13 @@
+name: website
+
+website:
+  component: '@serverless/website'
+  inputs:
+    code:
+      src: dist/serverless-angular
+      hook: ng build
+    # region: eu-west-1 #Ireland
+    # bucketName: georgikowebsite
+    # env: # Environment variables to include in a 'env.js' file with your uploaded code.
+      # API_URL: https://api.georgiko.com
+    # domain: www.georgiko.com
