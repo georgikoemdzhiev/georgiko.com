@@ -1,0 +1,18 @@
+$icon-colour: black;
+
+#profile_pic {
+  width: auto;
+  height: 12em;
+}
+
+ul {
+  li {
+    i {
+      color: $icon-colour;
+    }
+
+    a {
+      color: $icon-colour;
+    }
+  }
+}
