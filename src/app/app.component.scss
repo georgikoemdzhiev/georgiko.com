@@ -5,14 +5,12 @@ $icon-colour: black;
   height: 12em;
 }
 
-ul {
-  li {
-    i {
-      color: $icon-colour;
-    }
+a {
+  color: $icon-colour;
+  color: $icon-colour;
+}
 
-    a {
-      color: $icon-colour;
-    }
-  }
+#source_code_link{
+  padding-left: 0.5em; 
+  padding-bottom: 0.2em;
 }
