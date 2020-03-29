@@ -1,2 +1,6 @@
 <H5 class="font-weight-bolder">Posts</H5>
-<p>&lt;To be added here&gt;</p>
+<ul class="list-unstyled">
+    <li *ngFor="let article of articles" (click)="onSelect(article)">
+       <a href="#">Id: {{article.Id}} - Title: {{article.Title}}</a>
+    </li>
+</ul>
