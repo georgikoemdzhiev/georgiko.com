@@ -1,4 +1,4 @@
-export class Article {
+export class Post {
   Id: string;
   Date: string;
   Title: string;
