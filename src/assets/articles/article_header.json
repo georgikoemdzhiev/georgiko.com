@@ -4,11 +4,6 @@
             "Id": 1,
             "Date": "29-03-2020",
             "Title": "How to use Serverless Framework to deploy Angular serverless app to AWS"
-        },
-        {
-            "Id": 2,
-            "Date": "30-03-2020",
-            "Title": "Article 2"
         }
     ]
 }

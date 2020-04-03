@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from '../posts/post.model';
 import { ActivatedRoute } from '@angular/router';
+import { PostService } from '../post.service';
 
 @Component({
   selector: 'app-post-detail',
@@ -8,9 +9,9 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./post-detail.component.scss']
 })
 export class PostDetailComponent implements OnInit {
-  id: string;
+  postContent: string;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private postService: PostService) { }
 
   ngOnInit() {
     this.getPost();
@@ -20,10 +21,10 @@ export class PostDetailComponent implements OnInit {
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
-      this.id = id;
       console.log(`Loading post ${id}`);
-      // this.post = ???;
-      // TODO create PostService and retrieve to the post from Assets
+      this.postService.getPost(id).subscribe(result => {
+        this.postContent = result;
+      });
     });
   }
 
