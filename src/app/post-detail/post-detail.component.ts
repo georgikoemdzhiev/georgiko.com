@@ -21,7 +21,7 @@ export class PostDetailComponent implements OnInit {
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
-      console.log(`Loading post ${id}`);
+
       this.postService.getPost(id).subscribe(result => {
         this.postContent = result;
       });

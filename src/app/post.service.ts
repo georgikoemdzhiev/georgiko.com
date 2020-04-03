@@ -6,12 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PostService {
+  private postHeaderUrl = 'assets/posts/posts_header.json';
 
   constructor(private http: HttpClient) { }
 
   getPost(id: string): Observable<string> {
-    return this.http.get(`/assets/articles/${id}.html`, {
+    return this.http.get(`/assets/posts/${id}.html`, {
       responseType: 'text'
     }) as Observable<string>;
+  }
+
+  getPosts(): Observable<any> {
+    return this.http.get<any[]>(this.postHeaderUrl);
   }
 }

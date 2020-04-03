@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Post } from './post.model';
+import { PostService } from '../post.service';
 
 @Component({
   selector: 'app-posts',
@@ -9,25 +9,14 @@ import { Post } from './post.model';
   styleUrls: ['./posts.component.scss']
 })
 export class PostsComponent implements OnInit {
-  private articleHeaderUrl = 'assets/articles/article_header.json';
+
   public posts: Post[];
 
-  constructor(private http: HttpClient) {
-
-  }
+  constructor(private http: HttpClient, private postService: PostService) {}
 
   ngOnInit(): void {
-    this.getPosts().subscribe(data => {
+    this.postService.getPosts().subscribe(data => {
       this.posts = data.Posts as Post[];
     });
   }
-
-  public getPosts(): Observable<any> {
-    return this.http.get<any[]>(this.articleHeaderUrl);
-  }
-
-  // public onSelect(post: Post) {
-  //   console.log(`CLicking on ${post.Id}`);
-  // }
-
 }
