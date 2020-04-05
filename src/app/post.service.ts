@@ -11,7 +11,7 @@ export class PostService {
   constructor(private http: HttpClient) { }
 
   getPost(id: string): Observable<string> {
-    return this.http.get(`/assets/posts/${id}.html`, {
+    return this.http.get(`/assets/posts/${id}/${id}.html`, {
       responseType: 'text'
     }) as Observable<string>;
   }
