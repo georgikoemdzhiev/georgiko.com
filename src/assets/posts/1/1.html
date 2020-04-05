@@ -46,4 +46,42 @@
         <br>
 
     </p>
+
+    <h3>Configure the Serverless environment</h3>
+    <p>To configure the Serverless environment we will have to add a few files to the root of our project. First, we
+        will need to add <code>serverless.yml</code> file. It specifies where our website source folder is and what
+        command it should run before deploying our app on AWS. Here is the content of my file:
+
+        <pre><code>
+            # serverless.yml
+            component: "@serverless/website"
+            inputs:
+              code:
+                src: dist/my-serverless-app
+                hook: ng build
+              region: eu-west-1 # optional. Default is us-east-1 
+              # uncomment if you would like to specify bucketname
+              # bucketName: georgikowebsite
+              env: # Environment variables to include in a 'env.js' file with your uploaded code.
+                API_URL: https://api.georgiko.com
+              # uncomment if you have a domain purchased from AWS
+              # domain: www.georgiko.com
+            </code></pre>
+    </p>
+    <p>
+        Here, we specify what Serverless component we will be using. In our case is a website
+        <code>@serverless/website</code>. The Serverless Components contains all of the needed logic to deploy our
+        serverless app. All we have to do is to specify a few <span class="font-italic">inputs</span>.
+        For example, above we specify where our website source code is <code>src: dist/my-serverless-app</code> (that is
+        the location where Angular will build our website).
+        Also, we specify a <code>hook</code> which is a script that Serverless framwork will execute before it deploys
+        our app to AWS. In this case we run <code>ng build</code> which
+        will tell Angular to build our website.
+    </p>
+
+    <p>
+        Next we need to add <code>.env</code> file to our project. It will contain the AWS AMI user credentials needed
+        for the Serverless framework to authenticate with AWS and deploy our app. 
+    </p>
+
 </div>
