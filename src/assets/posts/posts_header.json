@@ -2,8 +2,8 @@
     "Posts": [
         {
             "Id": 1,
-            "Date": "29-03-2020",
-            "Title": "How to use Serverless Framework to deploy Angular serverless app to AWS"
+            "Date": "1586186864880",
+            "Title": "How to use Serverless Framework to deploy Angular app to AWS"
         }
     ]
 }
