@@ -27,7 +27,7 @@
         command: <code>choco install serverless</code>.
     </p>
 
-    <p>To install Angular we can use <code>npm</code> again and install it with:
+    <p>To install Angular you can use <code>npm</code> again and install it with:
         <code>npm install -g @angular/cli</code>
     </p>
 
@@ -48,40 +48,80 @@
     </p>
 
     <h3>Configure the Serverless environment</h3>
-    <p>To configure the Serverless environment we will have to add a few files to the root of our project. First, we
+    <p>To configure the Serverless environment you will have to add a few files to the root of our project. First, you
         will need to add <code>serverless.yml</code> file. It specifies where our website source folder is and what
         command it should run before deploying our app on AWS. Here is the content of my file:
 
-        <pre><code>
-            # serverless.yml
-            component: "@serverless/website"
-            inputs:
-              code:
-                src: dist/my-serverless-app
-                hook: ng build
-              region: eu-west-1 # optional. Default is us-east-1 
-              # uncomment if you would like to specify bucketname
-              # bucketName: georgikowebsite
-              env: # Environment variables to include in a 'env.js' file with your uploaded code.
-                API_URL: https://api.georgiko.com
-              # uncomment if you have a domain purchased from AWS
-              # domain: www.georgiko.com
-            </code></pre>
+        <pre>
+        # serverless.yml
+        website:
+        component: '@serverless/website'
+        inputs:
+          code:
+            src: dist/my-serverless-app
+        #domain: www.your-custom-domain.com
+        </pre>
     </p>
     <p>
-        Here, we specify what Serverless component we will be using. In our case is a website
-        <code>@serverless/website</code>. The Serverless Components contains all of the needed logic to deploy our
-        serverless app. All we have to do is to specify a few <span class="font-italic">inputs</span>.
-        For example, above we specify where our website source code is <code>src: dist/my-serverless-app</code> (that is
-        the location where Angular will build our website).
-        Also, we specify a <code>hook</code> which is a script that Serverless framwork will execute before it deploys
-        our app to AWS. In this case we run <code>ng build</code> which
-        will tell Angular to build our website.
+        That's it, this is all you need to specify in order to run our web app on AWS. Here, you specify what Serverless
+        component you are be using, in our case is a <span class="font-italic">website</span>:
+        <code>@serverless/website</code>. We also specify where is our source code using one <span
+            class="font-italic">input</span> - <code>code</code>.
+
+        <br>
+
+        If you own a domain purchased from AWS Route 53 you can uncommend the <code>domain</code> input in the
+        <code>serverless.yml</code> file and run <code>serverless</code> in the terminal again. The Serverless framework
+        will aknowledge the presence of the new input and set up a CloudFront CDN as well as SSL certificate for you.
+        <mark>Please note that the domain must be purchased from AWS Route 53 in order to work with the website
+            component.</mark>
     </p>
 
     <p>
-        Next we need to add <code>.env</code> file to our project. It will contain the AWS AMI user credentials needed
-        for the Serverless framework to authenticate with AWS and deploy our app. 
+        Next you need to add <code>.env</code> file to the root of our project. It will contain the AWS AMI user
+        credentials needed
+        for the Serverless framework to authenticate with AWS and deploy our app. I would recommend that you create a
+        new IAM user specifically for the Serverless framework. So in AWS, create a new IAM user and grand it <span
+            class="font-italic">Programmatic access</span>:
+
+        <br>
+        <img src="/assets/posts/1/iam_add_user_1.png" class="rounded img-fluid" alt="IAM user with Programmatic access">
+
+        <br><br>
+        Next give the user <span class="font-weight-bold">AdministratorAccess</span> policy. When you are finished with
+        the
+        IAM user creation, populate the <code>.env</code> file with the IAM user <span class="font-weight-bold">Access
+            key
+            ID</span> & <span class="font-weight-bold">Secret access key</span> credentials like
+        so:
+
+        <br>
+        <img src="/assets/posts/1/env_file.png" class="rounded img-fluid" alt="Env file content">
     </p>
+
+    <h3>Deployment</h3>
+    <p>By that point, you should have everything you need to deploy our Angular web app to AWS. If you haven't yep, make
+        sure that you build your project. So in the terminal type <code>ng build --prod</code> and press
+        <kbd>Enter</kbd>. Then type
+        <code>serverless</code> and press <kbd>Enter</kbd> again. The Serverless framework will begin deploying your
+        Website
+        to AWS.
+        <br><br>
+        <img src="/assets/posts/1/deployment.png" class="rounded img-fluid"
+            alt="Building and deployung the Angular web app to AWS">
+
+        <br><br>
+        You should be able to go to above url and access your website.
+    </p>
+
+    <h3>Conclusion</h3>
+    <p>The Serverless framework provides a great way for your to get started with AWS and easily manage your serverless
+        app. If you would like to checkout the source code of my website - <span
+            class="font-italic">georgiko.com</span></a> which
+        is build with the same steps as above, you can go to my website's <a
+            href="https://github.com/georgikoemdzhiev/georgiko.com">github repo </a> and clone it.
+    </p>
+
+
 
 </div>
