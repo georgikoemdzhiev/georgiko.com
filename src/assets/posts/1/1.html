@@ -20,10 +20,10 @@
 
     <h3>Installing the required software</h3>
     <p>Let's start by installing the Serverless framework. If you are on Mac/Linux and have the <code>npm</code>
-        package manager you can install it
+        package manager, you can install it
         using the command:
         <code>npm install -g serverless</code>.
-        If you are on Windows you will have to use the <a href="https://chocolatey.org/">Chocolatey</a> package manager
+        If you are on Windows, you will have to use the <a href="https://chocolatey.org/">Chocolatey</a> package manager
         command: <code>choco install serverless</code>.
     </p>
 
@@ -65,14 +65,14 @@
         </pre>
     </p>
     <p>
-        That's it, this is all you need to specify to run our web app on AWS. Here, you specify what Serverless
-        component you are be using, in our case is a <span class="font-italic">website</span>:
-        <code>@serverless/website</code>. We also specify where is our source code using one <span
-            class="font-italic">input</span> - <code>code</code>.
+        That's it, this is all you need to specify to run your web app on AWS. Here, you specify what Serverless
+        component you are using, in this case is a <span class="font-italic">website</span>:
+        <code>@serverless/website</code>. It also specifies where is the source code using one <span
+            class="font-italic">input</span> called <code>code</code>.
 
         <br>
 
-        If you own a domain purchased from AWS Route 53 you can uncomment the <code>domain</code> input in the
+        If you own a domain purchased from AWS Route 53, you can uncomment the <code>domain</code> input in the
         <code>serverless.yml</code> file and run <code>serverless</code> in the terminal again. The Serverless framework
         will acknowledge the presence of the new input and set up a CloudFront CDN as well as SSL certificate for you.
         <mark>Please note that the domain must be purchased from AWS Route 53 to work with the website
@@ -83,14 +83,14 @@
         Next, you need to add <code>.env</code> file to the root of our project. It will contain the AWS AMI user
         credentials needed
         for the Serverless framework to authenticate with AWS and deploy our app. I would recommend that you create a
-        new IAM user specifically for the Serverless framework. So in AWS, create a new IAM user and grand it <span
+        new IAM user specifically for the Serverless framework. So in AWS, create a new IAM user and grant it <span
             class="font-italic">Programmatic access</span>:
 
         <br>
         <img src="/assets/posts/1/iam_add_user_1.png" class="rounded img-fluid" alt="IAM user with Programmatic access">
 
         <br><br>
-        Next give the user <span class="font-weight-bold">AdministratorAccess</span> policy. When you are finished with
+        Next, give the user <span class="font-weight-bold">AdministratorAccess</span> policy. When you are finished with
         the
         IAM user creation, populate the <code>.env</code> file with the IAM user <span class="font-weight-bold">Access
             key
@@ -102,8 +102,8 @@
     </p>
 
     <h3>Deployment</h3>
-    <p>By that point, you should have everything you need to deploy our Angular web app to AWS. If you haven't yep, make
-        sure that you build your project. So in the terminal type <code>ng build --prod</code> and press
+    <p>By that point, you should have everything you need to deploy our Angular web app to AWS. If you haven't yet, make
+        sure that you build your project. So in the terminal, type <code>ng build --prod</code> and press
         <kbd>Enter</kbd>. Then type
         <code>serverless</code> and press <kbd>Enter</kbd> again. The Serverless framework will begin deploying your
         Website
@@ -119,7 +119,7 @@
     <h3>Conclusion</h3>
     <p>The Serverless framework provides a great way for you to get started with AWS and easily manage your serverless
         app. If you would like to check out the source code of my website - <span
-            class="font-italic">georgiko.com</span></a> which
+            class="font-italic">georgiko.com</span></a>, which
         is built with the same steps as above, you can go to my website's <a
             href="https://github.com/georgikoemdzhiev/georgiko.com">github repo</a> and clone it.
     </p>
