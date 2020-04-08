@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from '../posts/post.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../post.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { PostService } from '../post.service';
 export class PostDetailComponent implements OnInit {
   postContent: string;
 
-  constructor(private route: ActivatedRoute, private postService: PostService) { }
+  constructor(private route: ActivatedRoute, private postService: PostService, private router: Router) { }
 
   ngOnInit() {
     this.getPost();
@@ -22,9 +22,7 @@ export class PostDetailComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
 
-      this.postService.getPost(id).subscribe(result => {
-        this.postContent = result;
-      });
+      this.postService.getPost(id).subscribe(result => this.postContent = result, error => this.router.navigate(['404']));
     });
   }
 
