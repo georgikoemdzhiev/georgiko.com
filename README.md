@@ -1,6 +1,6 @@
 # Serverless Angular Template
 
-This is a template for deploying a [Angular](https://angular.io) application onto a serverless website via the Website Component. The project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.7
+This is a template for deploying a [Angular](https://angular.io) application onto a serverless website via the Website Component. The project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11
 
 The Serverless Website Component sets up everything you need within seconds. It uses AWS S3 for hosting, AWS Cloudfront for a blazing fast CDN, AWS Route 53 to configure your custom domain and an AWS ACM Certificate to secure your with with SSL.
 
