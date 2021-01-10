@@ -21,7 +21,8 @@ export class PostDetailComponent implements OnInit {
 
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
-
+      // TODO attempt to use the title of the post from 'posts_header.json' to avoid title being duplicated -
+      // i.e. in posts_header.json & in the post itself
       this.postService.getPost(id).subscribe(result => this.postContent = result, error => this.router.navigate(['404']));
     });
   }

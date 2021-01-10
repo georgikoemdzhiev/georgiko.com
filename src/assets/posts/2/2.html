@@ -1,9 +1,44 @@
 <div class="d-flex flex-column mb-3">
     <h1 class="p-2 font-weight-bold">
-        Replicate database tables from Microsoft SQL to PostgreSQL server on AWS
-        <small class="text-muted">Dec 29, 2020</small>
+        Cheaper Scheduled Database Replication from Microsoft SQL Server to PostgreSQL on AWS
+        <small class="text-muted">Jan 10, 2021</small>
     </h1>
 
-    <p class="p-2">My team faced a very interesting problem at work which forced us to implement a database table
-        replication from MS SQL server to our own database which we fully control.</p>
+    <p class="p-2">Imagine the following scenario. You and your are responsible for a web app which reads data from
+        a table in a Microsoft SQL Server database managed by another team. Let's call that team - "<i>DB team</i>".
+        Every day, the DB team
+        runs an automated script which updates the database table using a <i>Kill And Fill</i> strategy. That means
+        they delete all of the data in the table we use and start filling it with "fresh" data.
+
+        The problem for our app is that if a user visits our website while the update script is running it
+        resulds in a lot of <i>Deadlock</i> exceptions (see this <a
+            href="https://vladmihalcea.com/database-deadlock/">post</a> for more
+        detailed explanation of what Deadlock is) as we are trying to read records from a table that was getting
+        updated in the same time.
+    </p>
+
+    <h3>The problem</h3>
+    <p>
+        You are proobably thinking <i>"You should talk to the DB team, they should change the way how they update the
+            table"</i> and you would be right. However, the problem is that we tried but it was apparant that the DB
+        team was unwilling to change how their script works. Our team found that unacceptable as this is a
+        <b>production</b> environment. So we had to figure out something.
+    </p>
+
+    <h3>Solution</h3>
+    <p>
+        It was becoming clear for our team that we needed to replicate the table we use from the "source" table to our
+        own database so we have
+        full controll over it and update the data in a smarter way.
+    </p>
+
+    <p>
+        After a few meetings we extablished the following requirements of the replication system:
+    <ul>
+        <li>The system should be inexpensive to operate</li>
+        <li>It should perform scheduled replication from the source table to our own table in the PostgreSQL</li>
+        <li>The web app should not be affected in any way while the table data is updated</li>
+    </ul>
+    </p>
+
 </div>
