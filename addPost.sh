@@ -15,4 +15,15 @@ echo "Creating post html file..."
 touch $postDir/$currentPostId/$currentPostId.html
 echo OK
 
-# TODO add logic to add a new post in 'post_header.json' file
+# the number of milliseconds elapsed since January 1 (equivalent to Date.now() in JavaScript)
+currentDateUTC="$(($(date +%s%N)/1000000))"
+echo currentDateUTC
+# read title from STDIN
+echo "Enter post title.."
+read -r title
+
+cat $postDir/posts_header.json | jq --arg id $currentPostId --arg date $currentDateUTC --arg title "$title" '.Posts += [{"Id":$id, "Date":$date, "Title":$title}]' > $postDir/temp.json
+rm $postDir/posts_header.json
+mv $postDir/temp.json $postDir/posts_header.json
+
+echo "Done. Added new post with title '$title'"
