@@ -1,10 +1,10 @@
 <div class="d-flex flex-column mb-3">
     <h1 class="p-2 font-weight-bold">
-        Cheaper Scheduled Database Replication from Microsoft SQL Server to PostgreSQL on AWS
+        Database Replication from Microsoft SQL Server to PostgreSQL on AWS using Python and EC2
         <small class="text-muted">Jan 10, 2021</small>
     </h1>
 
-    <p class="p-2">Imagine the following scenario. You and your are responsible for a web app which reads data from
+    <p class="p-2">Imagine the following scenario. You and your are responsible for a web app which uses data from
         a table in a Microsoft SQL Server database managed by another team. Let's call that team - "<i>DB team</i>".
         Every day, the DB team
         runs an automated script which updates the database table using a <i>Kill And Fill</i> strategy. That means
@@ -14,31 +14,52 @@
         resulds in a lot of <i>Deadlock</i> exceptions (see this <a
             href="https://vladmihalcea.com/database-deadlock/">post</a> for more
         detailed explanation of what Deadlock is) as we are trying to read records from a table that was getting
-        updated in the same time.
+        updated at the same time.
     </p>
 
     <h3>The problem</h3>
     <p>
-        You are proobably thinking <i>"You should talk to the DB team, they should change the way how they update the
-            table"</i> and you would be right. However, the problem is that we tried but it was apparant that the DB
-        team was unwilling to change how their script works. Our team found that unacceptable as this is a
-        <b>production</b> environment. So we had to figure out something.
+        You are proobably thinking <i>"You should just talk to the DB team and explain the problem so they can change
+            the way their script works"</i>. The problem is that we tried to comunicate the problem on numerous
+        occations but was apparant that the DB
+        team was unwilling to change how their script works. It was apparant for our team that we needed to take the
+        things in our hands as the current design was simply unexceptable for a
+        <b>production</b> system.
     </p>
 
     <h3>Solution</h3>
     <p>
         It was becoming clear for our team that we needed to replicate the table we use from the "source" table to our
         own database so we have
-        full controll over it and update the data in a smarter way.
+        full controll over it and update the data in a smarter way from the "upstream" table from the DB team.
     </p>
 
     <p>
-        After a few meetings we extablished the following requirements of the replication system:
-    <ul>
+        After a few meetings we extablished the following requirements of the system:
+    <ol>
+        <li>It should perform both manual and scheduled replication from the source table to our own table in the
+            PostgreSQL</li>
         <li>The system should be inexpensive to operate</li>
-        <li>It should perform scheduled replication from the source table to our own table in the PostgreSQL</li>
-        <li>The web app should not be affected in any way while the table data is updated</li>
-    </ul>
+        <li>The web app should not be affected in any way while the table data is updated from upstream table</li>
+    </ol>
+
+    Our team came up with this system design:
+    <br>
+    <br>
+
+    <img src="https://i.imgur.com/aUFHgdZ.png" alt="System design diagram">
+    </p>
+
+    <p>
+        The main idea of the system is to have a EC2 instance which executes a python script that does the data
+        replication
+        and when it is done, the instance is self-terminated. The EC2 instance is created by a lambda function. We
+        chouse
+        lambda as it allwed us to satisfy the first requirement quite easily. The function can be triggered manually
+        (i.e.
+        AWS Console) or on a scheduled basis using
+        <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html">CloudWatch Scheduled
+            events</a>.
     </p>
 
 </div>

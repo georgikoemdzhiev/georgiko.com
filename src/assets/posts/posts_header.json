@@ -8,7 +8,7 @@
     {
       "Id": "2",
       "Date": "1610282964880",
-      "Title": "Cheaper Scheduled Database Replication from Microsoft SQL Server to PostgreSQL on AWS"
+      "Title": "Database Replication from Microsoft SQL Server to PostgreSQL on AWS using Python and EC2"
     }
   ]
 }
