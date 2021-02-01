@@ -47,19 +47,53 @@
     <br>
     <br>
 
-    <img src="https://i.imgur.com/aUFHgdZ.png" alt="System design diagram">
+    <img width="900px" src="/assets/posts/2/system_design.png" alt="System design diagram">
     </p>
 
     <p>
-        The main idea of the system is to have a EC2 instance which executes a python script that does the data
-        replication
-        and when it is done, the instance is self-terminated. The EC2 instance is created by a lambda function. We
-        chouse
-        lambda as it allwed us to satisfy the first requirement quite easily. The function can be triggered manually
+        The main idea behind the architecture of the the system is to have a EC2 instance which executes a python script
+        at boot time
+        that does the data replication
+        and when that process is done, the script terminates the instance (i.e. self-terminate). The EC2 instance is
+        created/launched by a lambda
+        function. We chouse lambda as it allwed us to satisfy the first requirement - the function can be triggered
+        manually
         (i.e.
         AWS Console) or on a scheduled basis using
         <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html">CloudWatch Scheduled
             events</a>.
+
+        <br> By using Lambda and terminating the EC2 instance we satisfied the second requirement as we only pay for the
+        computing time. That applies to Lambda as well as the EC2 instance as it get's terminated when it finishes its
+        work. <br>
+        The last requirement is satisfied by the use of 2 database tables created in our Aurora Serverless database. We
+        use <a href="https://en.wikipedia.org/wiki/Blue-green_deployment">BLUE/GREEN deployment</a> strategy which
+        allows us to perform a sync into a table while our customers are using another table. At the end of the sync we
+        swap the "current" table (i.e. the table that is used by our app/customers) with the one that we performed the
+        sync
+        to.
     </p>
 
+    <h3>Python script</h3>
+    <p>
+        The workflow of the script can be seen in the following diagram:
+        <br>
+        <img height="500px" width="600px" src="/assets/posts/2/script_workflow.png" alt="Python script diagram">
+
+        <br>
+        The script starts with connecting to the source database (in our case that is a MSSQL Server) and performs an
+        export
+        of a table to a csv file on the EC2 instance. If that is successful, we query DynamoDB table that stores 1 item
+        and
+        that is the name of the currently used table, for example "TABLE_GREEN". We delete all of the records of the
+        "TABLE_BLUE" table and start updating it with the data from the csv file.
+        When that is finished, we recreate the <b>view</b> using "TABLE_BLUE" table and set
+        the "current name" to be "TABLE_BLUE" as well and shutdown the EC2 instance.
+
+        <br>
+    <pre><code>&lt;p&gt;Sample code here...&lt;/p&gt;
+            &lt;p&gt;And another line of sample text here...&lt;/p&gt;
+            </code></pre>
+
+    </p>
 </div>
