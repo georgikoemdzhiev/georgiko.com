@@ -1,7 +1,7 @@
 <div class="d-flex flex-column mb-3">
     <h1 class="p-2 font-weight-bold">
-        Database Replication from Microsoft SQL Server to PostgreSQL on AWS using Python and EC2
-        <small class="text-muted">Jan 10, 2021</small>
+        Database Replication System on AWS using Python script on EC2 instance
+        <small class="text-muted">Apr 2, 2021</small>
     </h1>
 
     <p class="p-2">Imagine the following scenario. You and your are responsible for a web app which uses data from
@@ -32,10 +32,9 @@
         It was becoming clear for our team that we needed to replicate the table we use from the "source" table to our
         own database so we have
         full controll over it and update the data in a smarter way from the "upstream" table from the DB team.
-    </p>
 
-    <p>
         After a few meetings we extablished the following requirements of the system:
+
     <ol>
         <li>It should perform both manual and scheduled replication from the source table to our own table in the
             PostgreSQL</li>
@@ -44,11 +43,15 @@
     </ol>
 
     Our team came up with this system design:
+
+    <br>
+    </p>
+
     <br>
     <br>
 
     <img width="900px" src="/assets/posts/2/system_design.png" alt="System design diagram">
-    </p>
+
 
     <p>
         The main idea behind the architecture of the the system is to have a EC2 instance which executes a python script
@@ -74,26 +77,93 @@
         to.
     </p>
 
-    <h3>Python script</h3>
+    <h4>Python script workflow</h4>
     <p>
         The workflow of the script can be seen in the following diagram:
-        <br>
-        <img height="500px" width="600px" src="/assets/posts/2/script_workflow.png" alt="Python script diagram">
-
-        <br>
-        The script starts with connecting to the source database (in our case that is a MSSQL Server) and performs an
+        <br><img height="500px" width="600px" src="/assets/posts/2/script_workflow.png" alt="Python script diagram"><br>
+        The first thing that the script does is to connect to the source database (in our case that is a MSSQL Server)
+        and perform an
         export
-        of a table to a csv file on the EC2 instance. If that is successful, we query DynamoDB table that stores 1 item
-        and
-        that is the name of the currently used table, for example "TABLE_GREEN". We delete all of the records of the
-        "TABLE_BLUE" table and start updating it with the data from the csv file.
+        of the source table to a csv file on the EC2 instance itself. If that is successful, we query a DynamoDB table
+        that stores a single item which tells us the "current table" name (either TABLE_BLUE & TABLE_GREEN) for example
+        TABLE_GREEN. Then, we delete all of the records of the "future current" table - "TABLE_BLUE" and start updating
+        it with the data from the csv file.
         When that is finished, we recreate the <b>view</b> using "TABLE_BLUE" table and set
-        the "current name" to be "TABLE_BLUE" as well and shutdown the EC2 instance.
+        the "current name" to be "TABLE_BLUE". Last step is to shut down the shutdown the EC2 instance.
 
         <br>
-    <pre><code>&lt;p&gt;Sample code here...&lt;/p&gt;
-            &lt;p&gt;And another line of sample text here...&lt;/p&gt;
-            </code></pre>
+    </p>
 
+    <h5>main.py</h5>
+    <p>
+        Bellow you can see the contents of the <code>main</code> method inside main.py. It goes through all of the steps
+        definied in the script workflow above.
+    <pre class="prettyprint lang-py">
+        <code>
+    # start inserting records in the DB if there was a successfull export
+    if(export_source_db_data()):
+
+        # get the 'CurrentTableName' from the DynamoDB table
+        current_table = get_current_table_name()
+
+        if current_table == 'TABLE_BLUE':
+            new_table_name = 'TABLE_GREEN'
+        else:
+            new_table_name = 'TABLE_BLUE'
+
+        # use string interpolation to populate the name of the current table
+        insert_sql = insert_sql.format(current_table_name=new_table_name)
+
+        delete_all_from_new_table_sql = "delete from {new_table_name}".format(
+            new_table_name=new_table_name)
+        # delete all of the records in the 'new_table' before we start inserting records into it
+        rds_client.execute_statement(resourceArn=db_cluster_arn, secretArn=db_credentials_secrets_store_arn,
+                                        database=aurora_database_name, sql=delete_all_from_new_table_sql)
+
+        parameter_set = []
+
+        with open(fileName, 'r') as file:
+            reader = csv.DictReader(file, delimiter=',')
+
+            for row in reader:
+
+                entry = get_entry(row)
+
+                if(len(parameter_set) == batch_size):
+                    try_execute_bath_transaction(insert_sql, parameter_set)
+
+                    transaction_count = transaction_count + 1
+                    print(
+                        f'Transaction count: {transaction_count}. Num of failed transactions: {num_of_failed_transactions}')
+
+                    parameter_set.clear()
+                    parameter_set.append(entry)
+                else:
+                    parameter_set.append(entry)
+            # check if we have records that didn't fit into a batch (i.e. less than batch_size)
+            if(len(parameter_set) > 0):
+                try_execute_bath_transaction(insert_sql, parameter_set)
+                transaction_count = transaction_count + 1
+                print(f'Transaction count: {transaction_count}')
+
+        # if we have inserted all of the records without an issue
+        if(num_of_failed_transactions == 0):
+            update_current_table_name(new_table_name)
+            update_db_views(new_table_name)
+            notify_devs('Full database sync completed successfully! Currently used table: {new_table_name}.\n The sync took: {elapsed_time} minutes'.format(
+                new_table_name=new_table_name, elapsed_time=calculate_elapsed_time()))
+        else:
+            notify_devs('Failed to perform Source database sync.')
+    else:
+        notify_devs('Failed to export source database.')
+
+    # Self-Terminate the Instance
+    subprocess.Popen(self_terminate_bash_commnand.split())
+        </code></pre>
+    </p>
+    <h5>Source code</h5>
+    <p>
+        If you would like to have a look at the source code of the project, please head to my GitHub repo <a
+            href="https://github.com/georgikoemdzhiev/data-sync-aws-py">post</a>
     </p>
 </div>

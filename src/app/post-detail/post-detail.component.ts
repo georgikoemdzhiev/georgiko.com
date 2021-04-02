@@ -1,17 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Post } from '../posts/post.model';
+import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../post.service';
+
+declare var PR: any;
 
 @Component({
   selector: 'app-post-detail',
   templateUrl: './post-detail.component.html',
   styleUrls: ['./post-detail.component.scss']
 })
-export class PostDetailComponent implements OnInit {
+export class PostDetailComponent implements OnInit, AfterViewChecked {
   postContent: string;
 
+
   constructor(private route: ActivatedRoute, private postService: PostService, private router: Router) { }
+
+  ngAfterViewChecked(): void {
+    PR.prettyPrint();
+  }
 
   ngOnInit() {
     this.getPost();
